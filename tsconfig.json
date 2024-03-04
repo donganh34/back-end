@@ -20,7 +20,7 @@
       "noFallthroughCasesInSwitch": false,
       "esModuleInterop": true,
       "paths": {
-          "@/*": ["src/*"]
+          "/*": ["src/*"]
       }
   },
   "ts-node": {
