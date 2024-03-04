@@ -10,21 +10,6 @@ import { diskStorage } from 'multer';
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]),
-          MulterModule.register({
-            storage: diskStorage({
-              destination: './data',
-              filename: (req, file, callback) => {
-                callback(null, `${file.fieldname}-${Date.now()}-${file.originalname}`);
-              },
-            }),
-            fileFilter: (req, file, callback) => {
-              if (file.mimetype.startsWith('image/')) {
-                callback(null, true);
-              } else {
-                callback(new Error('Not an image file'), false);
-              }
-            },
-          }),
     ],
     controllers: [ProductController],
     providers: [ProductService, ProductRepository],
