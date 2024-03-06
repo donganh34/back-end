@@ -70,36 +70,25 @@ export class ProductController extends BaseController {
     @ApiResponseError([SwaggerApiType.UPDATE])
     @ApiResponseSuccess(updateProductSuccessResponseExample)
     @ApiBody({ type: UpdateProductDto })
-    @UseInterceptors(FileInterceptor('file'))
     @Patch(':id')
     async updateProduct(
         @Param('id', new JoiValidationPipe(mongoIdSchema)) id: string,
         @Body(new TrimBodyPipe(), new JoiValidationPipe())
         dto: UpdateProductDto,
-        @UploadedFile() file?,
     ) {
         try {
-            const Product = await this.ProductService.findProductById(
-                toObjectId(id),
-            );
-            if (!Product) {
+            const user = await this.ProductService.findProductById(toObjectId(id));
+            if (!user) {
                 return new ErrorResponse(
                     HttpStatus.ITEM_NOT_FOUND,
-                    this.translate('Product.error.notFound', {
+                    this.translate('user.error.notFound', {
                         args: {
                             id,
                         },
                     }),
                 );
             }
-            if(file!=null)
-            {
-                const imagePath = Product.imageUrl === '' ? null : `./${Product.imageUrl}`;
-                if (fs.existsSync(imagePath)) {
-                    fs.unlinkSync(imagePath);
-                }
-            }
-            dto.imageUrl = file != null ? `/data/${file.filename}` : Product.imageUrl;
+
             const result = await this.ProductService.updateProduct(
                 toObjectId(id),
                 dto,
